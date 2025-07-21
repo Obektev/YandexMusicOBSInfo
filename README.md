@@ -1,4 +1,4 @@
-### ENGLISH
+### ENGLISH (Русский снизу)
 
 # Yandex Music OBS Info
 
