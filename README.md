@@ -16,7 +16,7 @@ Displays the song title, artist, cover image, and pause status. The text scrolls
 1. Download or clone this repository to your PC.
 2. Install the Tampermonkey browser extension: [https://www.tampermonkey.net/](https://www.tampermonkey.net/)
 3. Install the Tampermonkey script from: [https://greasyfork.org/en/scripts/543237-yandex-music-obs-info](https://greasyfork.org/en/scripts/543237-yandex-music-obs-info)
-4. Make sure the domain in the script matches your region:
+4. Make sure the domain in the script matches your region (you can see it in URL field when open YandexMusic webpage):
 
 ```  
 // @match        https://music.yandex.by/*   // For Belarus
@@ -54,12 +54,11 @@ Displays the song title, artist, cover image, and pause status. The text scrolls
 1. Скачайте или клонируйте этот репозиторий на ваш компьютер.
 2. Установите расширение Tampermonkey для браузера: [https://www.tampermonkey.net/](https://www.tampermonkey.net/)
 3. Установите скрипт Tampermonkey отсюда: [https://greasyfork.org/ru/scripts/543237-yandex-music-obs-info](https://greasyfork.org/ru/scripts/543237-yandex-music-obs-info)
-4. Убедитесь, что домен в скрипте соответствует вашему региону:
-```
+4. Убедитесь, что домен в скрипте соответствует вашему региону (можно увидеть в поле ссылки, когда открываете Yandex Music):
 
-// @match        [https://music.yandex.by/](https://music.yandex.by/)\*   // Для Беларуси
-// @match        [https://music.yandex.ru/](https://music.yandex.ru/)\*   // Для России
-
+```  
+// @match        https://music.yandex.by/*   // Для Беларуси
+// @match        https://music.yandex.ru/*   // Для России
 ```
 *(Пока не знаю, как сделать, чтобы работало везде.)*
 
