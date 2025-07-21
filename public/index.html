@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Now Playing</title>
+    <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+<div id="main_container">
+    <img src="error.png" alt="Cover" id="image"/>
+    <div id="text_container">
+        <p class="label" id="status">Now Playing:</p>
+        <div id="marquee-container">
+        </div>
+    </div>
+</div>
+
+<script>
+    const container = document.getElementById('marquee-container');
+    let texts = [];
+    let currentText = '';
+    let animationId;
+    const speed = 1; // pixels per frame
+
+    function createTextNode(text) {
+        const span = document.createElement('span');
+        span.textContent = text;
+        span.style.position = 'absolute';
+        span.style.whiteSpace = 'nowrap';
+        span.style.left = '0px';
+        span.style.top = '0';
+        span.style.color = 'white';
+        span.style.fontSize = '1.1rem';
+        return span;
+    }
+
+    function clearMarquee() {
+        texts.forEach(t => container.removeChild(t));
+        texts = [];
+        if (animationId) {
+            cancelAnimationFrame(animationId);
+            animationId = null;
+        }
+    }
+
+    function startMarquee(text) {
+        if (text === currentText) return; // no change
+        currentText = text;
+        clearMarquee();
+
+        // create initial node at 0
+        const first = createTextNode(text);
+        first.style.left = '0px';
+        container.appendChild(first);
+        texts.push(first);
+
+        function animate() {
+            for (let i = 0; i < texts.length; i++) {
+                const span = texts[i];
+                let left = parseFloat(span.style.left);
+                left -= speed;
+                span.style.left = left + 'px';
+            }
+
+            const last = texts[texts.length - 1];
+            const lastRight = parseFloat(last.style.left) + last.offsetWidth;
+
+            if (lastRight < container.offsetWidth) {
+                const clone = createTextNode(text);
+                clone.style.left = lastRight + 'px';
+                container.appendChild(clone);
+                texts.push(clone);
+            }
+
+            if (texts[0]) {
+                const firstLeft = parseFloat(texts[0].style.left);
+                if (firstLeft + texts[0].offsetWidth < 0) {
+                    container.removeChild(texts[0]);
+                    texts.shift();
+                }
+            }
+
+            animationId = requestAnimationFrame(animate);
+        }
+
+        animate();
+    }
+
+    async function fetchNowPlaying() {
+        try {
+            const res = await fetch('http://localhost:3000/now-playing');
+            if (!res.ok) throw new Error('Network response was not ok');
+            const data = await res.json();
+
+            // update text
+            const songText = data.artist && data.title ? `${data.artist} - ${data.title}⠀⠀⠀⠀⠀⠀` : 'Nothing is playing right now';
+            startMarquee(songText);
+
+            // update cover
+            const img = document.getElementById('image');
+            if (img && data.cover && img.src !== data.cover) {
+                img.src = data.cover;
+            }
+
+            // Update if paused
+            document.getElementById("status").innerText = data.isPaused ? "Now Paused:" : "Now Playing:"
+
+        } catch (e) {
+            console.error('Failed to fetch song info:', e);
+        }
+    }
+
+    // Start fetching and updating every second
+    fetchNowPlaying();
+    setInterval(fetchNowPlaying, 1000);
+
+</script>
+</body>
+</html>
